@@ -1,0 +1,17 @@
+{
+  "name": "discordbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Duy Hy",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "file-system": "^2.2.2",
+    "firebase": "^8.2.1",
+    "ibm-watson": "^6.0.0"
+  }
+}
