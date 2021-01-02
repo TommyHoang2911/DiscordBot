@@ -58,124 +58,120 @@ var idMessage = "";
 
 client.on('message', msg => {
 
-    assistant.message({
-        assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
-        sessionId: sessionId,
-        input: {
-            'message_type': 'text',
-            'text': msg.content.toLowerCase(),
-        }
-    })
-        .then(res => {
-            console.log(JSON.stringify(res.result, null, 2));
-            //  Trường hợp chưa tranning
-            if ((res.result.output.intents.length === 0) && (res.result.output.entities.length === 0)) {
-                // msg.reply("Error + "+ res.result.output.generic[0].text);
-            }
-
-            // Bắt đầu hội thoại
-            if ((res.result.output.entities.length === 0 && res.result.output.intents[0].intent.includes("action"))) {
-
-                // Hiển thị avatar
-                if (res.result.output.intents[0].intent.includes("action_43896_intent_46723")) {
-                    msg.channel.send(msg.author.displayAvatarURL());
-                }
-                msg.reply(res.result.output.generic[0].text);
-                // --up wukong Trang bị ngộ không
-                if (res.result.output.intents[0].intent.includes("action_9108_intent_16763")) {
-                    msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/wukong/Wukong-Startup.png"] });
-                    msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/wukong/Wukong-HighWinRate.png"] });
-                    msg.channel.send("- Khi team không Tanker ", { files: ["./image/wukong/Wukong-TeamNoTanker.png"] });
-                    msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/wukong/Wukong-ApEnemyOverDame.png"] });
-                    idMessage = "1";
-                }
-                // --up amumu Trang bị amumu
-                if (res.result.output.intents[0].intent.includes("action_49162_intent_49743")) {
-                    msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/amumu/Amumu-Startup.png"] });
-                    msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/amumu/Amumu-HighWinRate.png"] });
-                    msg.channel.send("- Khi AD team địch quá mạnh ", { files: ["./image/amumu/AdEnemyOverDame- 1.png"] });
-                    msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/amumu/Amumu-AdSatThuOverDame.png"] });
-                    idMessage = "1";
-                }
-                // --up singled Trang bị singled
-                if (res.result.output.intents[0].intent.includes("action_9275_intent_48519")) {
-                    msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/singled/Singled-Startup.png"] });
-                    msg.channel.send("- Khi đi đường Baron ", { files: ["./image/singled/Singled-3Ron.png"] });
-                    msg.channel.send("- Khi AP Tanker team địch mạnh ", { files: ["./image/singled/Singled-ApTankEnemyOverDame.png"] });
-                    msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/singled/Singled-AdSathuOverDame.png"] });
-                    idMessage = "1";
-                }
-                // --up nami Trang bị nami
-                if (res.result.output.intents[0].intent.includes("action_28194_intent_48421")) {
-                    msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/nami/Nami-Startup.png"] });
-                    msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/nami/Nami-HighWinRate.png"] });
-                    msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/nami/Nami-AdSathuOverDame.png"] });
-                    msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/nami/Nami-ApEnemyOverDame.png"] });
-                    idMessage = "1";
-                }
-                // --up sona Trang bị sona
-                if (res.result.output.intents[0].intent.includes("action_39743_intent_2078")) {
-                    msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/sona/Sona-Startup.png"] });
-                    msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/sona/Sona-HighWinRate.png"] });
-                    msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/sona/Sona-AdSathuOverDame.png"] });
-                    msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/sona/Sona-ApEnemyOverDame.png"] });
-                    idMessage = "1";
-                }
-                // --up mundo Trang bị mundo
-                if (res.result.output.intents[0].intent.includes("action_34728_intent_11980")) {
-                    msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/mundo/Mundo-Startup.png"] });
-                    msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/mundo/Mundo-HighWinRate.png"] });
-                    msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/mundo/Mundo-Jungle~.png"] });
-                    msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/mundo/Mundo-ApEnemyOverDame.png"] });
-                    idMessage = "1";
-                }
-
-                // counter amumu
-                if (res.result.output.intents[0].intent.includes("action_23843_intent_24024")) {
-                    msg.channel.send("👇👇👇👇", { files: ["./image/amumu/counter_amumu.png"] });
-                    idMessage = "1";
-                }
-                // counter mundo
-                if (res.result.output.intents[0].intent.includes("action_31090_intent_21613")) {
-                    msg.channel.send("👇👇👇", { files: ["./image/mundo/counter_mundo.png"] });
-                    idMessage = "1";
-                }
-                // counter nami
-                if (res.result.output.intents[0].intent.includes("action_38136_intent_49785")) {
-                    msg.channel.send("👇👇👇", { files: ["./image/nami/counter_nami.png"] });
-                    idMessage = "1";
-                }
-                // counter singled
-                if (res.result.output.intents[0].intent.includes("action_38926_intent_34929")) {
-                    msg.channel.send("👇👇👇👇", { files: ["./image/singled/counter_singled.png"] });
-                    idMessage = "1";
-                }
-                // counter sona
-                if (res.result.output.intents[0].intent.includes("action_46425_intent_36344")) {
-                    msg.channel.send("👇👇👇", { files: ["./image/sona/counter_sona.png"] });
-                    idMessage = "1";
-                }
-                // counter wukong
-                if (res.result.output.intents[0].intent.includes("action_44360_intent_28303")) {
-                    msg.channel.send("👇👇👇👇", { files: ["./image/wukong/counter_wukong.png"] });
-                    idMessage = "1";
-                }
-            }
-
-            // Khi hội thoại có sự lựa chọn
-            if ((res.result.output.entities[0].entity.includes("action") && res.result.output.intents.length === 0)) {
-                msg.reply(res.result.output.generic[0].text);
+    if ((!msg.author.client)) {
+        return;
+    } else {
+        console.log("📌 Check :" + msg.member.id);
+        assistant.message({
+            assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
+            sessionId: sessionId,
+            input: {
+                'message_type': 'text',
+                'text': msg.content.toLowerCase(),
             }
         })
-        .catch(err => {
-            console.log(err);
-        });
+            .then(res => {
+                if ((msg.member.id !== "784631751456063530")) {
+                    console.log(JSON.stringify(res.result, null, 2));
+                    //  Trường hợp chưa tranning
+                    if ((res.result.output.intents.length === 0) && (res.result.output.entities.length === 0)) {
+                        msg.reply(res.result.output.generic[0].text);
+                    }
 
-    if (idMessage === "1") {
-        msg.reply("- Hãy đặt câu hỏi cho tôi 😜😜");
-        idMessage = "";
+                    // Bắt đầu hội thoại
+                    if ((res.result.output.entities.length === 0 && res.result.output.intents[0].intent.includes("action")) && (res.result.output.intents[0].confidence > 0.6)) {
+
+                        // Hiển thị avatar
+                        if (res.result.output.intents[0].intent.includes("action_43896_intent_46723")) {
+                            msg.channel.send(msg.author.displayAvatarURL());
+                        }
+                        msg.reply(res.result.output.generic[0].text);
+                        // --up wukong Trang bị ngộ không
+                        if (res.result.output.intents[0].intent.includes("action_9108_intent_16763")) {
+                            msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/wukong/Wukong-Startup.png"] });
+                            msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/wukong/Wukong-HighWinRate.png"] });
+                            msg.channel.send("- Khi team không Tanker ", { files: ["./image/wukong/Wukong-TeamNoTanker.png"] });
+                            msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/wukong/Wukong-ApEnemyOverDame.png"] });
+                        }
+                        // --up amumu Trang bị amumu
+                        if (res.result.output.intents[0].intent.includes("action_49162_intent_49743")) {
+                            msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/amumu/Amumu-Startup.png"] });
+                            msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/amumu/Amumu-HighWinRate.png"] });
+                            msg.channel.send("- Khi AD team địch quá mạnh ", { files: ["./image/amumu/AdEnemyOverDame- 1.png"] });
+                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/amumu/Amumu-AdSatThuOverDame.png"] });
+                        }
+                        // --up singled Trang bị singled
+                        if (res.result.output.intents[0].intent.includes("action_9275_intent_48519")) {
+                            msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/singled/Singled-Startup.png"] });
+                            msg.channel.send("- Khi đi đường Baron ", { files: ["./image/singled/Singled-3Ron.png"] });
+                            msg.channel.send("- Khi AP Tanker team địch mạnh ", { files: ["./image/singled/Singled-ApTankEnemyOverDame.png"] });
+                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/singled/Singled-AdSathuOverDame.png"] });
+                        }
+                        // --up nami Trang bị nami
+                        if (res.result.output.intents[0].intent.includes("action_28194_intent_48421")) {
+                            msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/nami/Nami-Startup.png"] });
+                            msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/nami/Nami-HighWinRate.png"] });
+                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/nami/Nami-AdSathuOverDame.png"] });
+                            msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/nami/Nami-ApEnemyOverDame.png"] });
+                        }
+                        // --up sona Trang bị sona
+                        if (res.result.output.intents[0].intent.includes("action_39743_intent_2078")) {
+                            msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/sona/Sona-Startup.png"] });
+                            msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/sona/Sona-HighWinRate.png"] });
+                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/sona/Sona-AdSathuOverDame.png"] });
+                            msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/sona/Sona-ApEnemyOverDame.png"] });
+                        }
+                        // --up mundo Trang bị mundo
+                        if (res.result.output.intents[0].intent.includes("action_34728_intent_11980")) {
+                            msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/mundo/Mundo-Startup.png"] });
+                            msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/mundo/Mundo-HighWinRate.png"] });
+                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/mundo/Mundo-Jungle~.png"] });
+                            msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/mundo/Mundo-ApEnemyOverDame.png"] });
+                        }
+
+                        // counter amumu
+                        if (res.result.output.intents[0].intent.includes("action_23843_intent_24024")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/amumu/counter_amumu.png"] });
+                        }
+                        // counter mundo
+                        if (res.result.output.intents[0].intent.includes("action_31090_intent_21613")) {
+                            msg.channel.send("👇👇👇", { files: ["./image/mundo/counter_mundo.png"] }); 
+                        }
+                        // counter nami
+                        if (res.result.output.intents[0].intent.includes("action_38136_intent_49785")) {
+                            msg.channel.send("👇👇👇", { files: ["./image/nami/counter_nami.png"] });
+                        }
+                        // counter singled
+                        if (res.result.output.intents[0].intent.includes("action_38926_intent_34929")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/singled/counter_singled.png"] });
+                        }
+                        // counter sona
+                        if (res.result.output.intents[0].intent.includes("action_46425_intent_36344")) {
+                            msg.channel.send("👇👇👇", { files: ["./image/sona/counter_sona.png"] });
+                        }
+                        // counter wukong
+                        if (res.result.output.intents[0].intent.includes("action_44360_intent_28303")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/wukong/counter_wukong.png"] });
+                        }
+                    }
+
+                    // Khi hội thoại có sự lựa chọn
+                    if ((res.result.output.entities[0].entity.includes("action") && res.result.output.intents.length === 0)) {
+                        msg.reply(res.result.output.generic[0].text);
+                    }
+                    // Set default idMessage when bot replied
+                    idMessage = 1;
+                }else{return;}
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+        if (idMessage === "1") {
+            msg.channel.send("- Hãy đặt câu hỏi cho tôi 😜😜");
+            idMessage = "";
+        }
     }
-
 });
 
 client.on('guildMemberAdd', member => {
@@ -188,4 +184,4 @@ client.on('guildMemberAdd', member => {
 });
 
 
-client.login('Nzg0NjMxNzUxNDU2MDYzNTMw.X8sHQw._Z5K85nNxSbA3-CB1gZqvPS-kME');
+client.login('Nzg0NjMxNzUxNDU2MDYzNTMw.X8sHQw.QpZGWT5fpVnzFqrqrZTVkzpV9SA');
