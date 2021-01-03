@@ -3,37 +3,38 @@
 // Watson API
 // const AssistantV2 = require('ibm-watson/assistant/v2');
 // const { IamAuthenticator } = require('ibm-watson/auth');
+import dotenv from 'dotenv';
+const result = dotenv.config();
 import AssistantV2 from 'ibm-watson/assistant/v2.js';
 import { IamAuthenticator } from 'ibm-watson/auth/index.js';
 
 const authenticator = new IamAuthenticator({
-    apikey: "QcK1rAuqBmJicO8Ykl88mT0k0LF-mF8ZVbJidInHfVx3",
+    apikey: process.env.WATSON_ASSISTANT_APIKEY,
 });
 
 const assistant = new AssistantV2({
     version: '2020-09-24',
     authenticator: authenticator,
-    serviceUrl: 'https://api.au-syd.assistant.watson.cloud.ibm.com/instances/c5546b41-9d1b-4e41-9d42-08614ed2bcb9',
+    serviceUrl: process.env.WATSON_ASSISTANT_URL,
     disableSslVerification: true,
 });
-var sessionId = "";
-assistant.createSession({
-    assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
-})
-    .then(res => {
-        console.log(JSON.stringify(res.result, null, 2));
-        if (res.result.session_id != null) {
-            sessionId = res.result.session_id;
-        }
-    })
-    .catch(err => {
-        console.log(err);
-    });
+// assistant.createSession({
+//     assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
+// })
+//     .then(res => {
+//         console.log(JSON.stringify(res.result, null, 2));
+//         if (res.result.session_id != null) {
+//             sessionId = res.result.session_id;
+//         }
+//     })
+//     .catch(err => {
+//         console.log(err);
+//     });
 
 // Firebase
 // const firebase = require("firebase");
 // const firebaseConfig = {
-//     apiKey: "AIzaSyBoB1PRNVxkU8b9hw7-czGgypyQKNUk4bE",
+//     apiKey: "",
 //     authDomain: "chatbotdiscord-b2ac8.firebaseapp.com",
 //     projectId: "chatbotdiscord-b2ac8",
 //     storageBucket: "chatbotdiscord-b2ac8.appspot.com",
@@ -61,26 +62,35 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
+var sessionId = "";
+var sessionMessage = "";
 var idMessage = "";
+// Depend on times-out of session id which was provided
+var timeCheckSession = new Date();
 
 client.on('message', async msg => {
 
     if ((!msg.author.client)) {
         return;
     } else {
+
+        // Handle message content to action music content
         await commandHandler.handle(msg);
 
         console.log("📌 Check :" + msg.member.id);
-        assistant.message({
-            assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
-            sessionId: sessionId,
-            input: {
-                'message_type': 'text',
-                'text': msg.content.toLowerCase(),
-            }
-        })
-            .then(res => {
-                if ((msg.member.id !== "784631751456063530") && !msg.content.startsWith(".")) {
+        // Condition message content of member is not BOT && ... 
+        if ((msg.member.id !== "784631751456063530") && !msg.content.startsWith(".") && (sessionMessage.length > 0)) {
+            // Set session id to get message
+            assistant.message({
+                assistantId: process.env.WATSON_ASSISTANT_ID,
+                sessionId: sessionId,
+                input: {
+                    'message_type': 'text',
+                    'text': msg.content.toLowerCase(),
+                }
+            })
+                .then(res => {
+
                     console.log(JSON.stringify(res.result, null, 2));
                     //  Trường hợp chưa tranning
                     if ((res.result.output.intents.length === 0) && (res.result.output.entities.length === 0)) {
@@ -106,7 +116,7 @@ client.on('message', async msg => {
                         if (res.result.output.intents[0].intent.includes("action_49162_intent_49743")) {
                             msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/amumu/Amumu-Startup.png"] });
                             msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/amumu/Amumu-HighWinRate.png"] });
-                            msg.channel.send("- Khi AD team địch quá mạnh ", { files: ["./image/amumu/AdEnemyOverDame- 1.png"] });
+                            msg.channel.send("- Khi AD team địch quá mạnh ", { files: ["./image/amumu/Amumu-AdEnemyOverDame- 1.png"] });
                             msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/amumu/Amumu-AdSatThuOverDame.png"] });
                         }
                         // --up singled Trang bị singled
@@ -134,7 +144,7 @@ client.on('message', async msg => {
                         if (res.result.output.intents[0].intent.includes("action_34728_intent_11980")) {
                             msg.channel.send("- Trang bị khởi đầu ", { files: ["./image/mundo/Mundo-Startup.png"] });
                             msg.channel.send("- Tỉ lệ thắng cao ", { files: ["./image/mundo/Mundo-HighWinRate.png"] });
-                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/mundo/Mundo-Jungle~.png"] });
+                            msg.channel.send("- Khi AD Sát thủ team địch mạnh ", { files: ["./image/mundo/Mundo-Jungle.png"] });
                             msg.channel.send("- Khi AP team địch mạnh ", { files: ["./image/mundo/Mundo-ApEnemyOverDame.png"] });
                         }
 
@@ -170,11 +180,30 @@ client.on('message', async msg => {
                     }
                     // Set default idMessage when bot replied
                     idMessage = 1;
-                } else { return; }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
+        if (msg.content === "create session") {
+            assistant.createSession({
+                assistantId: process.env.WATSON_ASSISTANT_ID,
             })
-            .catch(err => {
-                console.log(err);
-            });
+                .then(res => {
+                    console.log(JSON.stringify(res.result, null, 2));
+                    if (res.result.session_id != null) {
+                        sessionId = res.result.session_id;
+                        sessionMessage = "SUCCESS";
+                        console.log(timeCheckSession.getMinutes());
+                        msg.reply("Session id successfully created ✔✔");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    msg.reply("Creating session id failed 😥 I'm sorry.");
+                });
+        }
 
         if (idMessage === "1") {
             msg.channel.send("- Hãy đặt câu hỏi cho tôi 😜😜");
@@ -193,4 +222,6 @@ client.on('guildMemberAdd', member => {
 });
 
 
-client.login('Nzg0NjMxNzUxNDU2MDYzNTMw.X8sHQw.LVzIkIBW0AE6sM5ISYc_rNwW01c');
+client.login(process.env.TOKEN);
+
+// Mundo amumu
