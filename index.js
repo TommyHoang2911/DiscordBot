@@ -1,8 +1,10 @@
 // Import the native fs module
-const fs = require('fs');
+// const fs = require('fs');
 // Watson API
-const AssistantV2 = require('ibm-watson/assistant/v2');
-const { IamAuthenticator } = require('ibm-watson/auth');
+// const AssistantV2 = require('ibm-watson/assistant/v2');
+// const { IamAuthenticator } = require('ibm-watson/auth');
+import AssistantV2 from 'ibm-watson/assistant/v2.js';
+import { IamAuthenticator } from 'ibm-watson/auth/index.js';
 
 const authenticator = new IamAuthenticator({
     apikey: "QcK1rAuqBmJicO8Ykl88mT0k0LF-mF8ZVbJidInHfVx3",
@@ -29,26 +31,31 @@ assistant.createSession({
     });
 
 // Firebase
-const firebase = require("firebase");
-const firebaseConfig = {
-    apiKey: "AIzaSyBoB1PRNVxkU8b9hw7-czGgypyQKNUk4bE",
-    authDomain: "chatbotdiscord-b2ac8.firebaseapp.com",
-    projectId: "chatbotdiscord-b2ac8",
-    storageBucket: "chatbotdiscord-b2ac8.appspot.com",
-    messagingSenderId: "961853271431",
-    appId: "1:961853271431:web:89193a54f6136ca6433722",
-    measurementId: "G-EZ00747WLB"
-};
+// const firebase = require("firebase");
+// const firebaseConfig = {
+//     apiKey: "AIzaSyBoB1PRNVxkU8b9hw7-czGgypyQKNUk4bE",
+//     authDomain: "chatbotdiscord-b2ac8.firebaseapp.com",
+//     projectId: "chatbotdiscord-b2ac8",
+//     storageBucket: "chatbotdiscord-b2ac8.appspot.com",
+//     messagingSenderId: "961853271431",
+//     appId: "1:961853271431:web:89193a54f6136ca6433722",
+//     measurementId: "G-EZ00747WLB"
+// };
 
-const firebaseapp = firebase.initializeApp(firebaseConfig);
+// const firebaseapp = firebase.initializeApp(firebaseConfig);
 
-const db = firebaseapp.firestore();
+// const db = firebaseapp.firestore();
 
 // Discord
-const { Client, MessageEmbed, MessageAttachment } = require('discord.js');
-
+// const { Client, MessageEmbed, MessageAttachment } = require('discord.js');
+import { Client } from 'discord.js';
+import { CommandHandler } from './handlers/command-handler.js';
 // Create an instance of a Discord client
 const client = new Client();
+
+const commandHandler = new CommandHandler();
+
+commandHandler.init();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -56,11 +63,13 @@ client.on('ready', () => {
 
 var idMessage = "";
 
-client.on('message', msg => {
+client.on('message', async msg => {
 
     if ((!msg.author.client)) {
         return;
     } else {
+        await commandHandler.handle(msg);
+
         console.log("📌 Check :" + msg.member.id);
         assistant.message({
             assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
@@ -71,7 +80,7 @@ client.on('message', msg => {
             }
         })
             .then(res => {
-                if ((msg.member.id !== "784631751456063530")) {
+                if ((msg.member.id !== "784631751456063530") && !msg.content.startsWith(".")) {
                     console.log(JSON.stringify(res.result, null, 2));
                     //  Trường hợp chưa tranning
                     if ((res.result.output.intents.length === 0) && (res.result.output.entities.length === 0)) {
@@ -135,7 +144,7 @@ client.on('message', msg => {
                         }
                         // counter mundo
                         if (res.result.output.intents[0].intent.includes("action_31090_intent_21613")) {
-                            msg.channel.send("👇👇👇", { files: ["./image/mundo/counter_mundo.png"] }); 
+                            msg.channel.send("👇👇👇", { files: ["./image/mundo/counter_mundo.png"] });
                         }
                         // counter nami
                         if (res.result.output.intents[0].intent.includes("action_38136_intent_49785")) {
@@ -161,7 +170,7 @@ client.on('message', msg => {
                     }
                     // Set default idMessage when bot replied
                     idMessage = 1;
-                }else{return;}
+                } else { return; }
             })
             .catch(err => {
                 console.log(err);
@@ -184,4 +193,4 @@ client.on('guildMemberAdd', member => {
 });
 
 
-client.login('Nzg0NjMxNzUxNDU2MDYzNTMw.X8sHQw.QpZGWT5fpVnzFqrqrZTVkzpV9SA');
+client.login('Nzg0NjMxNzUxNDU2MDYzNTMw.X8sHQw.LVzIkIBW0AE6sM5ISYc_rNwW01c');
