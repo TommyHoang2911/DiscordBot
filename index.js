@@ -1,8 +1,4 @@
-// Import the native fs module
-// const fs = require('fs');
 // Watson API
-// const AssistantV2 = require('ibm-watson/assistant/v2');
-// const { IamAuthenticator } = require('ibm-watson/auth');
 import dotenv from 'dotenv';
 const result = dotenv.config();
 import AssistantV2 from 'ibm-watson/assistant/v2.js';
@@ -18,18 +14,6 @@ const assistant = new AssistantV2({
     serviceUrl: process.env.WATSON_ASSISTANT_URL,
     disableSslVerification: true,
 });
-// assistant.createSession({
-//     assistantId: '7b8bb4ee-5a4b-4547-8f3e-30417ec1a060',
-// })
-//     .then(res => {
-//         console.log(JSON.stringify(res.result, null, 2));
-//         if (res.result.session_id != null) {
-//             sessionId = res.result.session_id;
-//         }
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
 
 // Firebase
 // const firebase = require("firebase");
@@ -42,15 +26,13 @@ const assistant = new AssistantV2({
 //     appId: "1:961853271431:web:89193a54f6136ca6433722",
 //     measurementId: "G-EZ00747WLB"
 // };
-
 // const firebaseapp = firebase.initializeApp(firebaseConfig);
-
 // const db = firebaseapp.firestore();
 
 // Discord
-// const { Client, MessageEmbed, MessageAttachment } = require('discord.js');
-import { Client } from 'discord.js';
+import { Client, MessageEmbed } from 'discord.js';
 import { CommandHandler } from './handlers/command-handler.js';
+
 // Create an instance of a Discord client
 const client = new Client();
 
@@ -60,6 +42,7 @@ commandHandler.init();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    
 });
 
 var sessionId = "";
@@ -69,15 +52,16 @@ var idMessage = "";
 var timeCheckSession = new Date();
 
 client.on('message', async msg => {
+    const guildTag = msg.channel.type === 'text' ? `[${msg.guild.name}]` : '[DM]';
+    const channelTag = msg.channel.type === 'text' ? `[#${msg.channel.name}]` : '';
+    console.log(`${guildTag}${channelTag} ${msg.author.tag}: ${msg.content}`);
 
     if ((!msg.author.client)) {
         return;
     } else {
-
         // Handle message content to action music content
         await commandHandler.handle(msg);
 
-        console.log("📌 Check :" + msg.member.id);
         // Condition message content of member is not BOT && ... 
         if ((msg.member.id !== "784631751456063530") && !msg.content.startsWith(".") && (sessionMessage.length > 0)) {
             // Set session id to get message
@@ -98,7 +82,7 @@ client.on('message', async msg => {
                     }
 
                     // Bắt đầu hội thoại
-                    if ((res.result.output.entities.length === 0 && res.result.output.intents[0].intent.includes("action")) && (res.result.output.intents[0].confidence > 0.6)) {
+                    if ((res.result.output.entities.length === 0 && res.result.output.intents[0].intent.includes("action")) && (res.result.output.intents[0].confidence > 0.4)) {
 
                         // Hiển thị avatar
                         if (res.result.output.intents[0].intent.includes("action_43896_intent_46723")) {
@@ -172,6 +156,31 @@ client.on('message', async msg => {
                         if (res.result.output.intents[0].intent.includes("action_44360_intent_28303")) {
                             msg.channel.send("👇👇👇👇", { files: ["./image/wukong/counter_wukong.png"] });
                         }
+
+                        // Amumu win
+                        if (res.result.output.intents[0].intent.includes("action_24322_intent_11088")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/amumu/Loi The.png"] });
+                        }
+                        // Mundo win
+                        if (res.result.output.intents[0].intent.includes("action_36960_intent_26501")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/mundo/Loi The.png"] });
+                        }
+                        // Nami win
+                        if (res.result.output.intents[0].intent.includes("action_22896_intent_25570")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/nami/Loi The.png"] });
+                        }
+                        // Singled win
+                        if (res.result.output.intents[0].intent.includes("action_17456_intent_27562")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/singled/Loi The.png"] });
+                        }    
+                        // Sona win
+                        if (res.result.output.intents[0].intent.includes("action_9807_intent_26115")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/sona/Loi The.png"] });
+                        }
+                        // Wukong win
+                        if (res.result.output.intents[0].intent.includes("action_4014_intent_34350")) {
+                            msg.channel.send("👇👇👇👇", { files: ["./image/wukong/Loi The.png"] });
+                        }
                     }
 
                     // Khi hội thoại có sự lựa chọn
@@ -186,7 +195,8 @@ client.on('message', async msg => {
                 });
         }
 
-        if (msg.content === "create session") {
+        if (msg.content.replace(/\s/g, '').toLowerCase() === "createsession") {
+            msg.reply("🕤 Waiting ....");
             assistant.createSession({
                 assistantId: process.env.WATSON_ASSISTANT_ID,
             })
@@ -195,8 +205,12 @@ client.on('message', async msg => {
                     if (res.result.session_id != null) {
                         sessionId = res.result.session_id;
                         sessionMessage = "SUCCESS";
-                        console.log(timeCheckSession.getMinutes());
-                        msg.reply("Session id successfully created ✔✔");
+                        timeCheckSession = timeCheckSession.getMinutes();
+                        if(timeCheckSession < 55){
+
+                        }
+                        console.log(timeCheckSession);
+                        msg.reply(" ✅-SUCCESS");
                     }
                 })
                 .catch(err => {
@@ -205,22 +219,23 @@ client.on('message', async msg => {
                 });
         }
 
+        if (msg.content.replace(/\s/g, '').toLowerCase() === "guide") {
+            const embed = new MessageEmbed()
+                // Set the title of the field
+                .setTitle('Hướng dẫn sử dụng')
+                // Set the color of the embed
+                .setColor(418484)
+                // Set the main content of the embed
+                .setDescription('🎵 🎶 🎵\n- ".play <url>": Play\n- ".<stop,pause,resume,seek,skip,list>": Handle\n- "create session": 👇Use function below👇\n- "--up <champion_name>": Xem cách lên trang bị\n- "counter <champion_name>" or "--ct <champion_name": Xem tướng khắc chế\n- "my avatar": Lấy avatar của bạn');
+            msg.channel.send(embed);
+        }
+
         if (idMessage === "1") {
-            msg.channel.send("- Hãy đặt câu hỏi cho tôi 😜😜");
+            msg.channel.send("- Hãy ra lệnh cho tôi 😜😜");
             idMessage = "";
         }
     }
 });
-
-client.on('guildMemberAdd', member => {
-    // Send the message to a designated channel on a server:
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
-    // Do nothing if the channel wasn't found on this server
-    if (!channel) return;
-    // Send the message, mentioning the member
-    channel.send(`Welcome to the server, ${member}`);
-});
-
 
 client.login(process.env.TOKEN);
 
