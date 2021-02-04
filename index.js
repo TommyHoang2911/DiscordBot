@@ -42,14 +42,15 @@ commandHandler.init();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    
+
 });
 
 var sessionId = "";
 var sessionMessage = "";
 var idMessage = "";
 // Depend on times-out of session id which was provided
-var timeCheckSession = new Date();
+
+var timesOver;
 
 client.on('message', async msg => {
     const guildTag = msg.channel.type === 'text' ? `[${msg.guild.name}]` : '[DM]';
@@ -74,7 +75,6 @@ client.on('message', async msg => {
                 }
             })
                 .then(res => {
-
                     console.log(JSON.stringify(res.result, null, 2));
                     //  Trường hợp chưa tranning
                     if ((res.result.output.intents.length === 0) && (res.result.output.entities.length === 0)) {
@@ -172,7 +172,7 @@ client.on('message', async msg => {
                         // Singled win
                         if (res.result.output.intents[0].intent.includes("action_17456_intent_27562")) {
                             msg.channel.send("👇👇👇👇", { files: ["./image/singled/Loi The.png"] });
-                        }    
+                        }
                         // Sona win
                         if (res.result.output.intents[0].intent.includes("action_9807_intent_26115")) {
                             msg.channel.send("👇👇👇👇", { files: ["./image/sona/Loi The.png"] });
@@ -189,9 +189,17 @@ client.on('message', async msg => {
                     }
                     // Set default idMessage when bot replied
                     idMessage = 1;
+                    // if (timesOver === timeCheckSession.getMinutes) {
+                    //     idMessage = "2";
+                    // }
                 })
                 .catch(err => {
                     console.log(err);
+                    var currentTime = new Date();
+                    if (currentTime.getMinutes() >= timesOver){
+                        sessionMessage="";
+                        msg.reply(`> Your session is overdate."Create session" again to use function.`);
+                    }
                 });
         }
 
@@ -205,12 +213,23 @@ client.on('message', async msg => {
                     if (res.result.session_id != null) {
                         sessionId = res.result.session_id;
                         sessionMessage = "SUCCESS";
+                        var timeCheckSession = new Date();
                         timeCheckSession = timeCheckSession.getMinutes();
-                        if(timeCheckSession < 55){
-
+                        if (timeCheckSession < 55) {
+                            timesOver = timeCheckSession + 5;
+                        } else if (timeCheckSession === 55) {
+                            timesOver = 0;
+                        } else if (timeCheckSession === 56) {
+                            timesOver = 1;
+                        } else if (timeCheckSession === 57) {
+                            timesOver = 2;
+                        } else if (timeCheckSession === 58) {
+                            timesOver = 3;
+                        } else if (timeCheckSession === 59) {
+                            timesOver = 4;
                         }
-                        console.log(timeCheckSession);
-                        msg.reply(" ✅-SUCCESS");
+                        console.log("Times curent: "+timeCheckSession+" - Times over: "+ timesOver);
+                        msg.reply(`> ✅ SUCCESS`);
                     }
                 })
                 .catch(err => {
@@ -231,7 +250,7 @@ client.on('message', async msg => {
         }
 
         if (idMessage === "1") {
-            msg.channel.send("- Hãy ra lệnh cho tôi 😜😜");
+            msg.channel.send("> Hãy ra lệnh cho tôi 😜😜");
             idMessage = "";
         }
     }
