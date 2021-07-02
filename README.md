@@ -36,7 +36,8 @@ $ npm install ytdl-core@latest
 $ node index.js
 
 * Success above guides: type "guide" in discord to see instructions of Bot
-* ![alt text](https://sharecode.vn/FilesUpload/CodeUpload/source-code-chat-bot-discord-22206.jpg)
+![alt text](https://sharecode.vn/FilesUpload/CodeUpload/source-code-chat-bot-discord-22206.jpg)
+
 * To use WATSON API trainning, must be access : https://www.ibm.com/watson
 
 🚀🚀🚀🚀🚀🚀🚀🚀🚀
