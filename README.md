@@ -1,4 +1,4 @@
-# DiscordBot
+# DiscordBot - Outdate
 ![alt text](https://sharecode.vn/FilesUpload/Code/source-code-chat-bot-discord-22206.jpg)
 
 
